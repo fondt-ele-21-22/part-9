@@ -17,9 +17,12 @@ def read_csv(fname):
     return data, header
 
 
-def scatter(x, y, xlabel=None, ylabel=None, figsize=None):
+def scatter(x, y, xlabel=None, ylabel=None, figsize=None, add_bisector=False):
     plt.figure(figsize=figsize)
     plt.scatter(x, y)
+    if add_bisector:
+        l, u = min(min(x), min(y)), max(max(x), max(y))
+        plt.plot([l, u], [l, u], color='tab:orange', linestyle=':')
     plt.xlabel(xlabel, fontsize=14)
     plt.ylabel(ylabel, fontsize=14)
     plt.grid(':')
@@ -41,6 +44,6 @@ def fit(x_list, y):
     # Ottengo la matrice dei coefficienti
     X = np.hstack(x_cols)
     # Risolvo il problema ai minimi quadrati
-    sol, _, _, _ = np.linalg.lstsq(X, y, rcond=None)
+    sol, sse, _, _ = np.linalg.lstsq(X, y, rcond=None)
     # Restituisco il risultato
-    return sol
+    return sol, sse[0] # sse[0] accede alla prima cella dell'array (i.e. è uno scalare)
